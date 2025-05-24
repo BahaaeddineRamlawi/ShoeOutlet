@@ -1,0 +1,306 @@
+/* Container & Layout */
+.admin-container {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #222;
+}
+
+.admin-form {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  max-width: 810px;
+  margin: 0 5%;
+}
+
+.form-left {
+  flex: 1 1 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-weight: 500;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  border-color: #1d4840;
+  box-shadow: 0 0 6px #2d4742;
+  background-color: #f9fbff;
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: 440px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.95rem;
+  color: #555;
+  accent-color: #1d4840;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.button {
+  margin-top: 1rem;
+  background-color: #1d4840;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px #28433e;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button:hover,
+.button:focus {
+  background-color: #398b7c;
+  box-shadow: 0 6px 18px #598c83;
+}
+
+.button.admin-panel {
+  width: 200px;
+}
+
+.image-preview {
+  flex: 1 1 300px;
+  border: 2px dashed #1d4840;
+  border-radius: 12px;
+  min-height: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ecfaf6;
+  padding: 1rem;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
+  min-width: 350px;
+}
+
+.image-preview p {
+  color: #777;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 8px 16px rgba(74, 75, 76, 0.25);
+}
+
+.size-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.size-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: 0.2s;
+}
+
+.size-button.selected {
+  background: #1d4840;
+  color: white;
+}
+
+.custom-size-input {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.required-warning {
+  color: red;
+  font-weight: bold;
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 720px) {
+  .admin-form {
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+  }
+
+  .image-preview {
+    min-height: 240px;
+    margin-top: 1.5rem;
+  }
+
+  .button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+#other-button {
+  background-color: transparent;
+  color: #000;
+  position: absolute;
+  right: 0%;
+}
+
+.product-list {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+}
+
+.edit-list {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.product-card {
+  border: #000 double 2px;
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 10px;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.edit-card {
+  border: #000 solid 2px;
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 10px;
+  width: 200px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.edit-button {
+  padding: 5px 20px;
+  margin: 5px;
+  color: #fff;
+  background-color: #1d4840;
+  border: none;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px #28433e;
+  align-self: flex-start;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.edit-button:hover {
+  background-color: #398b7c;
+  box-shadow: 0 6px 18px #598c83;
+}
+
+#delete-button {
+  box-shadow: 0 4px 12px #f74f4f;
+}
+
+#product-image {
+  width: 180px;
+  margin: 10px;
+  border-radius: 15px;
+  border: 1px solid #000;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 8px 16px;
+  margin-bottom: 4px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-weight: 500;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: red;
+  box-shadow: 0 0 6px rgba(163, 2, 2, 0.5);
+  background-color: #f9fbff;
+}
+
+.add-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.custom-file-upload input[type="file"] {
+  display: none;
+}
+
+#edit-product-title{
+  margin: 15px 0;
+}

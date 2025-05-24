@@ -1,0 +1,40 @@
+.sidebar {
+  position: fixed;
+  top: 100px;
+  left: 0;
+  width: 250px;
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+  height: 100vh;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 999;
+}
+.sidebar.visible {
+  transform: translateX(0);
+}
+.category-list {
+  margin-left: 1rem;
+}
+.category-list button {
+  background: none;
+  border: none;
+  color: blue;
+  cursor: pointer;
+  padding: 5px 0;
+  text-align: left;
+}
+.toggle-filter-button {
+  position: fixed;
+  top: 120px;
+  left: 10px;
+  z-index: 1000;
+  background: #333;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}

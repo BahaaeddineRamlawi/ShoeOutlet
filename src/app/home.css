@@ -1,0 +1,172 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+
+.homepage-container {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+}
+
+.products-container {
+  width: 90%;
+  margin: auto;
+}
+
+.products-container h2 {
+  font-size: 38px;
+}
+
+.poster {
+  position: relative;
+  width: 100%;
+}
+
+.poster-image {
+  width: fit-content;
+  transition: height 0.3s ease, width 0.3s ease;
+  border-top: 4px solid #eeeeee;
+  border-bottom: 4px solid #eeeeee;
+}
+
+.product-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.brand-logo {
+  height: 150px;
+  border-radius: 15px;
+  padding: 25px;
+  margin: 10px;
+  background-color: #f7f7f7;
+  flex: 1;
+  object-fit: contain;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.brands-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: auto;
+  padding: 20px;
+}
+
+.button-filter {
+  margin-top: 1rem;
+  background-color: #1d4840;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px #28433e;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button-filter:hover,
+.button-filter:focus {
+  background-color: #398b7c;
+  box-shadow: 0 6px 18px #598c83;
+}
+
+.brand-results-section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease-in-out;
+}
+
+.brand-results-section.show {
+  opacity: 1;
+  transform: translateY(0);
+  padding-top: 10px;
+}
+
+.shoe-ad-container {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(250deg, #1e3c30 0%, #2f5c4b 50%, #4a7d68 100%);
+  border-radius: 20px;
+  padding: 0px 40px;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  max-width: 1000px;
+  width: 80%;
+  margin: 50px auto;
+  overflow: visible;
+}
+
+.shoe-ad-image {
+  flex: 1;
+  position: relative;
+  padding-right: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: -50px;
+  z-index: 10;
+}
+
+.shoe-ad-image img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.shoe-ad-content {
+  flex: 1.5;
+  color: white;
+  text-align: left;
+}
+
+.shoe-ad-content h1 {
+  font-size: 56px;
+  line-height: 1.2;
+  font-weight: bold;
+}
+
+.shoe-ad-content h1 span {
+  color: #ac29dd;
+}
+
+@media only screen and (max-width: 600px) {
+  .shoe-ad-content h1 {
+    font-size: 44px;
+  }
+  .nav-background {
+    height: 110px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .poster-image {
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .shoe-ad-container {
+    flex-direction: column;
+    padding: 30px;
+    text-align: center;
+    padding-bottom: 0;
+  }
+
+  .shoe-ad-image {
+    padding-right: 0px;
+    transform: none;
+    z-index: 1;
+  }
+
+  .shoe-ad-content {
+    text-align: center;
+    margin-top: -30px;
+  }
+}

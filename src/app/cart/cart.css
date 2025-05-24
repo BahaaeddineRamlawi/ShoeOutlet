@@ -1,0 +1,93 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+
+.shoppingcart-page {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.shoppingcart-page h2 {
+  font-size: 35px;
+}
+
+.shoppingcart-products {
+  width: 90%;
+  padding: 0px 20px;
+  margin: auto;
+  flex: 1;
+}
+
+.nav-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.02) 0,
+    rgba(255, 255, 255, 0.02) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  z-index: 1;
+}
+.nav-background {
+  position: relative;
+  background-color: #1d4840;
+  min-height: 80px;
+  border-bottom: 2px solid #3c6f5d;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.product-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.cart-summary {
+  text-align: right;
+  padding: 20px;
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.checkout-button {
+  background-color: #1d4840;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.checkout-button:hover {
+  background-color: #2a5c52;
+}
+
+.empty-cart-message {
+  text-align: center;
+  margin-top: 2rem;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 550px) {
+  .cart-summary {
+    text-align: center;
+  }
+}
