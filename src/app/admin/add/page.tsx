@@ -1,22 +1,26 @@
 "use client";
 
 import "@/app/admin/admin.css";
-import { useState } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { uploadImageToImgBB } from "@/lib/uploadImageToImgBB";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
 import { genderCategoriesMap } from "@/config/genderCategories";
+import Image from "next/image";
+import { ProductForm } from "@/types/product";
 
 const genders = Object.keys(genderCategoriesMap);
 
 export default function AdminPage() {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<ProductForm>({
     name: "",
     size: "",
     price: "",
+    offerPrice: "",
     gender: "Unisex",
-    categories: [] as string[],
-    image: null as File | null,
+    categories: [],
+    image: null,
   });
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -31,8 +35,23 @@ export default function AdminPage() {
     "41-45",
     "45-49",
   ];
+  const router = useRouter();
 
-  const handleInput = (e: any) => {
+  useEffect(() => {
+    const verifyAuth = async () => {
+      try {
+        const res = await fetch("/api/admin/verify");
+        if (!res.ok) throw new Error("Unauthorized");
+      } catch {
+        router.push("/admin/login");
+      }
+    };
+    verifyAuth();
+  }, [router]);
+
+  const handleInput = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     if (name === "gender") {
       setForm((prev) => ({
@@ -57,8 +76,8 @@ export default function AdminPage() {
     }));
   };
 
-  const handleImageChange = (e: any) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
     setForm({ ...form, image: file });
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
@@ -67,7 +86,7 @@ export default function AdminPage() {
     }
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (
@@ -88,6 +107,7 @@ export default function AdminPage() {
         name: form.name,
         size: form.size,
         price: parseFloat(form.price),
+        offerPrice: form.offerPrice ? parseFloat(form.offerPrice) : undefined,
         gender: form.gender,
         categories: form.categories,
         imageUrl,
@@ -101,20 +121,23 @@ export default function AdminPage() {
         name: "",
         size: "",
         price: "",
+        offerPrice: "",
         gender: "Unisex",
         categories: [],
         image: null,
       });
       setPreviewUrl(null);
       setCustomSizeMode(false);
-    } catch (error: any) {
-      alert("Image upload failed: " + error.message);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Image upload failed";
+      alert(message);
     }
   };
 
   return (
     <main className="admin-container">
-      <h1 className="admin-title">Add New Shoe</h1>
+      <h1 className="admin-title">+ Add New Shoe</h1>
       <form className="admin-form" onSubmit={handleSubmit}>
         <div className="form-left">
           <input
@@ -184,6 +207,14 @@ export default function AdminPage() {
             required
             className="input"
           />
+          <input
+            name="offerPrice"
+            type="number"
+            placeholder="Offer Price"
+            value={form.offerPrice}
+            onChange={handleInput}
+            className="input"
+          />
           <select
             name="gender"
             value={form.gender}
@@ -227,7 +258,13 @@ export default function AdminPage() {
 
         <div className="image-preview">
           {previewUrl ? (
-            <img src={previewUrl} alt="Preview" />
+            <Image
+              src={previewUrl}
+              alt="Preview"
+              width={300}
+              height={300}
+              style={{ objectFit: "contain" }}
+            />
           ) : (
             <p>No image selected</p>
           )}

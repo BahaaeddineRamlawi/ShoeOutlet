@@ -1,0 +1,25 @@
+.show-more-button {
+  margin-top: 1rem;
+  background-color: #1d4840;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px #28433e;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.show-more-button:hover,
+.show-more-button:focus {
+  background-color: #398b7c;
+  box-shadow: 0 6px 18px #598c83;
+}
+
+.button-container {
+  text-align: center;
+  padding: 20px;
+  padding-bottom: 30px;
+}

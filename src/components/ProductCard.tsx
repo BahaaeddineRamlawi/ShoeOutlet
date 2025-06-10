@@ -1,35 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import "./ProductCard.css";
-
-type Product = {
-  id: string;
-  name: string;
-  size: string;
-  price: number;
-  description?: string;
-  imageUrl: string;
-  gender?: string;
-  categories?: string[];
-};
-
-type ProductCardProps = {
-  product: Product;
-};
+import Image from "next/image";
+import { ProductCardProps } from "@/types/product";
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [inCart, setInCart] = useState(false);
 
-  // Sync with localStorage on load and when updated
-  const syncState = () => {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    setIsFavorite(favorites.includes(product.id));
-    setInCart(cart.includes(product.id));
-  };
-
   useEffect(() => {
+    const syncState = () => {
+      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      setIsFavorite(favorites.includes(product.id));
+      setInCart(cart.includes(product.id));
+    };
+
     syncState();
     window.addEventListener("storage", syncState);
     window.addEventListener("favoritesUpdated", syncState);
@@ -39,8 +25,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       window.removeEventListener("favoritesUpdated", syncState);
       window.removeEventListener("cartUpdated", syncState);
     };
-  }, []);
-
+  }, [product.id]);
   const toggleFavorite = () => {
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
     const updated = favorites.includes(product.id)
@@ -67,7 +52,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div className="product-card">
       <div className="overlay-top">
         <div className="product-info">
-          <span className="product-name">{product.name}</span>
+          <span className="product-name">
+            {product.highlightedName || product.name}
+          </span>
+
           <span className="product-size">{product.size}</span>
         </div>
         <button className="icon-button heart" onClick={toggleFavorite}>
@@ -82,11 +70,27 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </span>
         </button>
       </div>
-
-      <img src={product.imageUrl} alt={product.name} className="product-img" />
-
+      <Image
+        src={product.imageUrl}
+        alt={product.name}
+        className="product-img"
+        height={1024}
+        width={1024}
+        unoptimized
+      />
       <div className="overlay-bottom">
-        <span className="price">${product.price.toFixed(2)}</span>
+        <div className="price">
+          {product.offerPrice ? (
+            <>
+              <span className="original-price">${product.price}</span>
+              <span className="offer-price">
+                ${product.offerPrice.toFixed(2)}
+              </span>
+            </>
+          ) : (
+            <span className="regular-price">${product.price.toFixed(2)}</span>
+          )}
+        </div>
         <button
           className={`add-to-cart ${inCart ? "in-cart" : ""}`}
           onClick={toggleCart}

@@ -66,10 +66,11 @@ const NavBar = () => {
 
   return (
     <>
+      <div className="nav-background"></div>
       <div className="top-left-nav">
         <Link href="/" className="store-logo">
           <span className="material-symbols-outlined shoe-icon">footprint</span>
-          <span className="store-name">Shoe Outlet</span>
+          <span className="store-name">ShoeOutlet</span>
         </Link>
       </div>
 
@@ -100,7 +101,7 @@ const NavBar = () => {
           )}
         </button>
 
-        <button className="icon-circle" onClick={() => router.push("/cart")}>
+        <button className="icon-circle" id="shopping-cart-button" onClick={() => router.push("/cart")}>
           <span className="material-symbols-outlined">shopping_cart</span>
         </button>
 

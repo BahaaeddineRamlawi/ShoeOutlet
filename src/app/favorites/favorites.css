@@ -19,14 +19,6 @@
   flex: 1;
 }
 
-.product-grid {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  padding: 20px;
-}
-
 .empty-favorite-message {
   text-align: center;
   margin-top: 2rem;

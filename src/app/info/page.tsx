@@ -21,9 +21,7 @@ export default function InfoPage() {
 
   return (
     <main className="info-page">
-      <div className="nav-background">
         <NavBar />
-      </div>
       <div className="info-content">
         {activeSection === "payment" && (
           <section className="info-section">
@@ -118,7 +116,7 @@ export default function InfoPage() {
               <li>Add items to your cart.</li>
               <li>Go to your cart.</li>
               <li>
-                Click <strong>"Proceed to Checkout"</strong>.
+                Click <strong>&quot;Proceed to Checkout&quot;</strong>.
               </li>
               <li>
                 You’ll be redirected to Instagram or WhatsApp with a message

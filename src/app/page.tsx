@@ -1,95 +1,110 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { db } from "@/lib/firebaseConfig";
+import useWindowWidth from "@/hooks/useWindowWidth";
 import { collection, getDocs, orderBy, limit, query } from "firebase/firestore";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
 import "./home.css";
 import ProductCard from "@/components/ProductCard";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
-
-type Product = {
-  id: string;
-  name: string;
-  size: string;
-  price: number;
-  description: string;
-  imageUrl: string;
-  gender: string;
-  categories?: string[];
-  timestamp?: { seconds: number };
-};
+import CategorySidebar from "@/components/CategorySidebar";
+import { Product } from "@/types/product";
 
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [brandResults, setBrandResults] = useState<Product[] | null>(null);
+  const [randomProducts, setRandomProducts] = useState<Product[]>([]);
   const [recentProducts, setRecentProducts] = useState<Product[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [offerProducts, setOfferProducts] = useState<Product[]>([]);
   const [showCategories, setShowCategories] = useState(false);
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [cart, setCart] = useState<string[]>([]);
   const [showSearch, setShowSearch] = useState(false);
   const [categoriesMap, setCategoriesMap] = useState<
     Record<string, Set<string>>
   >({});
+  const [fadeTransition, setFadeTransition] = useState(false);
+  const [randomIndex, setRandomIndex] = useState(0);
+  const [loadingRandom, setLoadingRandom] = useState(true);
+  const [loadingRecent, setLoadingRecent] = useState(true);
+
   const searchRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const screenWidth = useWindowWidth();
+  const productCount = screenWidth < 1000 ? 2 : screenWidth < 1335 ? 3 : 4;
+
+  const randomPlaceholders = Array.from({ length: productCount }, (_, i) => (
+    <div
+      key={`random-placeholder-${i}`}
+      className="product-card placeholder-box"
+    />
+  ));
+
+  const recentPlaceholders = Array.from({ length: 12 }, (_, i) => (
+    <div
+      key={`recent-placeholder-${i}`}
+      className="product-card placeholder-box"
+    />
+  ));
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const querySnapshot = await getDocs(collection(db, "products"));
-      const allItems: Product[] = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Product, "id">),
-      }));
-
-      // Set products + top 4 random
-      const shuffled = shuffleArray(allItems);
-      setProducts(allItems);
-      setFilteredProducts(shuffled.slice(0, 4));
-
-      // ✅ Fetch most recent 8 products from Firestore
-      const recentQuery = query(
+    const fetchLimitedProducts = async () => {
+      setLoadingRandom(true);
+      const randomQuery = query(
         collection(db, "products"),
-        orderBy("createdAt", "desc"),
-        limit(12)
+        orderBy("createdAt", "asc"),
+        limit(30)
       );
-      const recentSnapshot = await getDocs(recentQuery);
-      const recentItems: Product[] = recentSnapshot.docs.map((doc) => ({
+      const querySnapshot = await getDocs(randomQuery);
+      const allProducts: Product[] = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as Omit<Product, "id">),
       }));
-      setRecentProducts(recentItems);
 
-      // Favorites & cart from localStorage
-      const allProductIds = allItems.map((p) => p.id);
-      const savedFavorites: string[] = JSON.parse(
-        localStorage.getItem("favorites") || "[]"
-      );
-      const savedCart: string[] = JSON.parse(
-        localStorage.getItem("cart") || "[]"
-      );
-      const validFavorites = savedFavorites.filter((id) =>
-        allProductIds.includes(id)
-      );
-      const validCart = savedCart.filter((id) => allProductIds.includes(id));
-      setFavorites(validFavorites);
-      setCart(validCart);
-      localStorage.setItem("favorites", JSON.stringify(validFavorites));
-      localStorage.setItem("cart", JSON.stringify(validCart));
+      const offers = allProducts.filter((p) => !!p.offerPrice);
+      setOfferProducts(offers);
 
-      // Generate category map
+      const shuffled = allProducts.sort(() => Math.random() - 0.5).slice(0, 20);
+      setRandomProducts(shuffled);
+      setLoadingRandom(false);
+
       const genderMap: Record<string, Set<string>> = {};
-      for (const p of allItems) {
+      for (const p of shuffled) {
         if (!genderMap[p.gender]) genderMap[p.gender] = new Set();
         p.categories?.forEach((cat) => genderMap[p.gender].add(cat));
       }
       setCategoriesMap(genderMap);
     };
 
-    fetchProducts();
+    const fetchRecent = async () => {
+      setLoadingRecent(true);
+      const recentQuery = query(
+        collection(db, "products"),
+        orderBy("createdAt", "desc"),
+        limit(12)
+      );
+      const snapshot = await getDocs(recentQuery);
+      const items: Product[] = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<Product, "id">),
+      }));
+      setRecentProducts(items);
+      setLoadingRecent(false);
+    };
+
+    fetchLimitedProducts();
+    fetchRecent();
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFadeTransition(true);
+      setTimeout(() => {
+        setRandomIndex(
+          (prev) => (prev + productCount) % Math.max(randomProducts.length, 1)
+        );
+        setFadeTransition(false);
+      }, 500);
+    }, 20000);
+
+    return () => clearInterval(interval);
+  }, [randomProducts, productCount]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -97,7 +112,6 @@ export default function Home() {
         setShowSearch(false);
       }
     };
-
     if (showSearch) {
       document.addEventListener("mousedown", handleClickOutside);
     }
@@ -106,166 +120,77 @@ export default function Home() {
     };
   }, [showSearch]);
 
-  const shuffleArray = (array: Product[]) => {
-    return array.sort(() => Math.random() - 0.5);
-  };
-
-  const goToCategory = (gender: string, category: string) => {
-    router.push(`/shop/${gender}/${category}`);
-  };
-
-  const brandRef = useRef<HTMLDivElement>(null);
-
-  const handleBrandClick = (brand: string) => {
-    const filtered = products.filter((p) =>
-      p.name.toLowerCase().includes(brand.toLowerCase())
-    );
-    setBrandResults(filtered);
-    setSearchTerm(brand);
-    setShowSearch(true);
-
-    setTimeout(() => {
-      if (brandRef.current) {
-        const yOffset = -40; // change this value as needed
-        const y =
-          brandRef.current.getBoundingClientRect().top +
-          window.scrollY +
-          yOffset;
-        window.scrollTo({ top: y, behavior: "smooth" });
-      }
-    }, 100);
-  };
+  const visibleProducts = randomProducts.slice(
+    randomIndex,
+    randomIndex + productCount
+  );
 
   return (
     <main className="homepage-container">
       <div className="poster">
-        <div className="nav-background">
-          <NavBar />
-        </div>
-
-        {showCategories && (
-          <div className="collection-popup">
-            <div className="collection-content">
-              <button
-                className="close-button"
-                onClick={() => setShowCategories(false)}
-              >
-                ×
-              </button>
-              <h3>Categories</h3>
-              {Object.entries(categoriesMap).map(([gender, cats]) => (
-                <div key={gender}>
-                  <strong>{gender}</strong>
-                  <ul>
-                    {[...cats].map((cat) => (
-                      <li key={cat}>
-                        <button onClick={() => goToCategory(gender, cat)}>
-                          {cat}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <NavBar />
+        <CategorySidebar
+          show={showCategories}
+          categoriesMap={categoriesMap}
+          onToggle={() => setShowCategories(!showCategories)}
+        />
       </div>
 
       <div className="products-container">
-        {/* Random 4 products */}
         <h2 className="section-title">Random Selection</h2>
-        <div className="product-grid">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-
-        {/* Featured Brands */}
-        <h2 className="section-title">Featured Brands</h2>
-        <div className="brands-row">
-          {[
-            "Nike",
-            "Adidas",
-            "Reebok",
-            "NewBalance",
-            "Jordan",
-            "Skechers",
-            "Hoka",
-            "Asics",
-            "Fendi",
-          ].map((brand) => (
-            <img
-              key={brand}
-              src={`/images/brands/${brand}.png`}
-              alt={brand}
-              className="brand-logo"
-              onClick={() => handleBrandClick(brand)}
-              style={{ cursor: "pointer" }}
-            />
-          ))}
-        </div>
-
-        {/* Brand search results */}
         <div
-          ref={brandRef}
-          className={`brand-results-section ${brandResults ? "show" : ""}`}
+          className={`product-grid fade-wrapper ${
+            fadeTransition ? "fade-out" : "fade-in"
+          }`}
         >
-          {brandResults && (
-            <div
-              className={`brand-results-section ${brandResults ? "show" : ""}`}
-            >
-              <h2 className="section-title">
-                {searchTerm.includes("shoe")
-                  ? searchTerm
-                  : `${searchTerm} Shoes`}
-              </h2>
-              {brandResults.length > 0 ? (
-                <div className="product-grid">
-                  {brandResults.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
-              ) : (
-                <p>
-                  Sorry, we don't have any <strong>{searchTerm}</strong> shoes
-                  in stock right now.
-                </p>
-              )}
-              <button
-                className="button-filter"
-                onClick={() => {
-                  setBrandResults(null);
-                  setSearchTerm("");
-                }}
-              >
-                Clear Filter
-              </button>
-            </div>
-          )}
+          {loadingRandom
+            ? randomPlaceholders
+            : visibleProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
         </div>
 
-        {/* Recent products */}
+        <div className="section-divider" />
+
+        {offerProducts.length > 0 && (
+          <>
+            <h2 className="section-title">Special Offers</h2>
+            <div className="product-grid">
+              {offerProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </>
+        )}
+
+        <div className="section-divider" />
+
         <h2 className="section-title">Recent Products</h2>
         <div className="product-grid">
-          {recentProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {loadingRecent
+            ? recentPlaceholders
+            : recentProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
         </div>
       </div>
+
       <div className="shoe-ad-container">
-        {" "}
         <div className="shoe-ad-image">
-          {" "}
-          <img src="/images/shoe_poster.png" alt="Shoe Poster" />{" "}
+          <Image
+            src="/images/posters/shoe_poster.png"
+            alt="Shoe Poster"
+            width={320}
+            height={320}
+          />
         </div>
         <div className="shoe-ad-content">
-          {" "}
           <h1>
             <span>Free</span> Delivery All Over Lebanon
           </h1>
         </div>
       </div>
+
       <Footer />
     </main>
   );

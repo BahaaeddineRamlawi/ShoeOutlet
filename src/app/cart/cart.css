@@ -12,7 +12,7 @@
 }
 
 .shoppingcart-page h2 {
-  font-size: 35px;
+  font-size: 38px;
 }
 
 .shoppingcart-products {
@@ -20,40 +20,6 @@
   padding: 0px 20px;
   margin: auto;
   flex: 1;
-}
-
-.nav-background::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.02) 0,
-    rgba(255, 255, 255, 0.02) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  z-index: 1;
-}
-.nav-background {
-  position: relative;
-  background-color: #1d4840;
-  min-height: 80px;
-  border-bottom: 2px solid #3c6f5d;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-}
-
-.product-grid {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  padding: 20px;
 }
 
 .cart-summary {
@@ -84,6 +50,24 @@
   margin-top: 2rem;
   color: #666;
   font-size: 1.2rem;
+}
+
+.checkout-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+  justify-content: right;
+}
+
+.checkout-button.whatsapp {
+  background-color: #25d366;
+  color: white;
+}
+
+.checkout-button.instagram {
+  background-color: #e1306c;
+  color: white;
 }
 
 @media (max-width: 550px) {

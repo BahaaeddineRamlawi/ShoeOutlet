@@ -1,3 +1,18 @@
+.product-card-with-size {
+  position: relative;
+  border-radius: 25px;
+  background: #f7f7f7;
+  width: 250px;
+  min-height: 290px;
+  display: flex;
+  justify-content: start;
+  padding: 10px;
+  margin: 10px;
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+}
 .product-card {
   position: relative;
   border-radius: 25px;
@@ -23,7 +38,8 @@
 }
 
 .overlay-top,
-.overlay-bottom {
+.overlay-bottom,
+.overlay-bottom-size {
   position: absolute;
   display: flex;
   justify-content: space-between;
@@ -34,6 +50,12 @@
 
 .overlay-top {
   top: 5px;
+}
+
+.overlay-bottom-size {
+  bottom: 5px;
+  align-items: center;
+  flex-direction: column;
 }
 
 .overlay-bottom {
@@ -110,4 +132,90 @@
 
 .icon-button.heart span {
   font-size: 20px;
+}
+
+.price-one {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+}
+
+.size-select {
+  background-color: #1d4840;
+  border: none;
+  color: #fff;
+  padding: 4px 15px;
+  font-family: "Nunito", sans-serif;
+  text-align: center;
+  width: 100%;
+  border-radius: 15px;
+  border: 1px solid white;
+  margin-top: 5px;
+}
+
+.quantity-container {
+  padding-bottom: 60px;
+}
+
+.quantity-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: bold;
+}
+
+.quantity-label {
+  padding-bottom: 5px;
+}
+
+.quantity-selector {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.quantity-button {
+  background-color: #1d4840;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  margin: 0 5px;
+  align-items: center;
+  display: flex;
+  padding: 5px;
+}
+
+.no-spinners::-webkit-outer-spin-button,
+.no-spinners::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spinners {
+  -moz-appearance: textfield;
+  width: 25%;
+}
+
+.quantity-input {
+  border: #1d4840 2px solid;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
+}
+
+.quantity-input:focus {
+  box-shadow: 0 0 0 3px #50867d;
+  outline: none;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: gray;
+  margin-right: 8px;
+}
+.offer-price {
+  color: red;
+  font-weight: bold;
 }

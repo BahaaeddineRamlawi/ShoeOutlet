@@ -1,22 +1,73 @@
 export const genderCategoriesMap: Record<string, string[]> = {
   Men: [
-    "Running", "Sneakers", "Sport Chic", "Casual", "Formal",
-    "Football", "Hiking", "Boots", "Sandals", "Crocs", "Slipper"
+    "Running",
+    "Sneakers",
+    "Sport Chic",
+    "Casual",
+    "Formal",
+    "Football",
+    "Hiking",
+    "Boots",
+    "Sandals",
+    "Crocs",
+    "Slipper",
   ],
   Women: [
-    "Hand Bag", "Running", "Sneakers", "High Heels", "Ballerine",
-    "Sandals", "Boots", "Sport Chic", "Casual", "Crocs", "Slipper"
+    "Hand Bag",
+    "Running",
+    "Sneakers",
+    "High Heels",
+    "Ballerine",
+    "Sandals",
+    "Boots",
+    "Sport Chic",
+    "Casual",
+    "Crocs",
+    "Slipper",
   ],
   Boys: [
-    "Running", "Sneakers", "Boots", "Sandals", "Casual", "Crocs", "Slipper"
+    "Running",
+    "Sneakers",
+    "Boots",
+    "Sandals",
+    "Casual",
+    "Crocs",
+    "Slipper",
   ],
   Girls: [
-    "Running", "Sneakers", "Ballerine", "Boots", "Sandals", "Casual", "Crocs", "Slipper"
+    "Running",
+    "Sneakers",
+    "Ballerine",
+    "Boots",
+    "Sandals",
+    "Casual",
+    "Crocs",
+    "Slipper",
   ],
-  Children: [
-    "Running", "Sneakers", "Boots", "Sandals", "Casual", "Crocs", "Slipper"
+  Kids: [
+    "Running",
+    "Sneakers",
+    "Boots",
+    "Sandals",
+    "Casual",
+    "Crocs",
+    "Slipper",
   ],
-  Unisex: [
-    "Running", "Sneakers", "Casual", "Formal", "Sport Chic", "Crocs"
-  ],
+  Unisex: ["Running", "Sneakers"],
+};
+
+export const GENDER_ALIASES: Record<string, string> = {
+  men: "Men",
+  man: "Men",
+  women: "Women",
+  woman: "Women",
+  boys: "Boys",
+  boy: "Boys",
+  girls: "Girls",
+  girl: "Girls",
+  kids: "Kids",
+  kid: "Kids",
+  child: "Kids",
+  children: "Kids",
+  unisex: "Unisex",
 };

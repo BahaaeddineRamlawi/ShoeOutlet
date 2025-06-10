@@ -21,7 +21,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get current index from Firestore
     const snapshot = await getDoc(KEY_DOC_REF);
     let currentIndex = 0;
     if (snapshot.exists()) {
@@ -31,7 +30,6 @@ export async function POST(request: NextRequest) {
 
     const API_KEY = API_KEYS[currentIndex];
 
-    // Upload image to ImgBB
     const formData = new URLSearchParams();
     formData.append("image", image);
 
@@ -53,7 +51,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Rotate key index
     const nextIndex = (currentIndex + 1) % API_KEYS.length;
     await setDoc(KEY_DOC_REF, { index: nextIndex });
 

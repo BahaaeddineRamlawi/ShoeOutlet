@@ -1,0 +1,134 @@
+.left-sidebar {
+  position: fixed;
+  left: -230px;
+  width: 230px;
+  height: 100%;
+  background-color: #f8f9fa;
+  border-right: 2px solid #1d4840;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  transition: left 0.3s ease-in-out;
+  overflow-y: auto;
+  top: 0;
+}
+
+.left-sidebar.show {
+  left: 0;
+}
+
+.sidebar-toggle-container {
+  position: fixed;
+  left: 0;
+  z-index: 110;
+  padding-top: 10px;
+  transition: left 0.3s ease-in-out;
+}
+
+.sidebar-toggle-container.open {
+  left: 190px;
+}
+
+.sidebar-toggle-container.open .sidebar-toggle-button {
+  border-top-left-radius: 40px;
+  border-bottom-left-radius: 40px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.sidebar-toggle-button {
+  width: 40px;
+  height: 30px;
+  background-color: #1d4840;
+  border: none;
+  border-top-right-radius: 40px;
+  border-bottom-right-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sidebar-toggle-button:hover {
+  background-color: #256d60;
+}
+
+.sidebar-toggle-button .arrow {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(-45deg);
+  transition: transform 0.3s ease;
+}
+
+.sidebar-toggle-button.open .arrow {
+  transform: rotate(135deg);
+}
+
+.collection-content {
+  padding: 0 10px 0px 20px;
+}
+
+.collection-content ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.collection-content li button {
+  background: none;
+  border: none;
+  color: #1d4840;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.collection-content li button:hover {
+  text-decoration: underline;
+}
+
+.panel-top::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.02) 0,
+    rgba(255, 255, 255, 0.02) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  z-index: 1;
+}
+
+.panel-top {
+  position: relative;
+  background-color: #0f3c34;
+  height: 80px;
+  border-bottom: 2px solid #3c6f5d;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  z-index: 101;
+  transition: height 0.3s ease;
+}
+
+@media (max-width: 600px) {
+  .panel-top {
+    height: 110px;
+  }
+  .left-sidebar {
+    width: 100%;
+    left: -100vw;
+  }
+  .sidebar-toggle-container.open {
+    left: calc(100vw - 40px);
+  }
+  .collection-content {
+    padding: 0 10px 0px 50px;
+  }
+}

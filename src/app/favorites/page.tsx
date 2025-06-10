@@ -7,20 +7,10 @@ import ProductCard from "@/components/ProductCard";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import "./favorites.css";
-
-type Product = {
-  id: string;
-  name: string;
-  size: string;
-  price: number;
-  description: string;
-  imageUrl: string;
-  gender: string;
-  categories?: string[];
-};
+import { Product } from "@/types/product";
 
 export default function FavoritesPage() {
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [, setAllProducts] = useState<Product[]>([]);
   const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -66,9 +56,7 @@ export default function FavoritesPage() {
 
   return (
     <main className="favorites-page">
-      <div className="nav-background">
         <NavBar />
-      </div>
       <div className="favorites-products">
         <h2 className="section-title">Your Favorite Shoes</h2>
         {isLoading ? (

@@ -4,6 +4,7 @@ import { db } from "@/lib/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import "./FilterSidebar.css";
+import { Product } from "@/types/product";
 
 type SidebarProps = {
   visible: boolean;
@@ -17,7 +18,11 @@ export default function FilterSidebar({ visible }: SidebarProps) {
   useEffect(() => {
     const fetchData = async () => {
       const snapshot = await getDocs(collection(db, "products"));
-      const products = snapshot.docs.map((doc) => doc.data() as any);
+
+      const products: Product[] = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<Product, "id">),
+      }));
 
       const genderMap: Record<string, Set<string>> = {};
 
@@ -39,7 +44,9 @@ export default function FilterSidebar({ visible }: SidebarProps) {
   }, []);
 
   const goToCategory = (gender: string, category: string) => {
-    router.push(`/shop/${gender}/${category}`);
+    router.push(
+      `/shop/${encodeURIComponent(gender)}/${encodeURIComponent(category)}`
+    );
   };
 
   return (
