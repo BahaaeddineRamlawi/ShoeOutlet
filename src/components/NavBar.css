@@ -41,6 +41,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: #1d4840 1px solid;
   width: 120px;
+  transition: left 0.3s linear;
 }
 
 .store-logo {
@@ -81,6 +82,7 @@
   min-width: 115px;
   overflow: visible;
   justify-content: flex-start;
+  transition: right 0.3s linear;
 }
 
 .search-input {
@@ -179,7 +181,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   z-index: 99;
-  transition: height 0.3s ease;
+  transition: height 0.3s ease-in;
 }
 
 #shopping-cart-button{
@@ -192,5 +194,14 @@
   }
   .nav-background {
     height: 110px;
+  }
+}
+
+@media (max-width: 450px) {
+  .top-left-nav{
+    left: 20px;
+  }
+  .top-right-nav{
+    right: 20px;
   }
 }

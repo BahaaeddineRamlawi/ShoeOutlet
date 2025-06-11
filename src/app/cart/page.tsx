@@ -14,25 +14,18 @@ import { Product, CartItem, CartProductWithSize } from "@/types/product";
 const parseSizeRange = (range: string): string[] => {
   if (!range) return [];
   if (range.toLowerCase() === "custom") return ["Custom"];
-
   const [min, max] = range.split("-").map(Number);
   if (isNaN(min) || isNaN(max) || min > max) return [];
-
-  const sizes: string[] = [];
-  for (let i = min; i <= max; i++) {
-    sizes.push(i.toString());
-  }
-  return sizes;
+  return Array.from({ length: max - min + 1 }, (_, i) => (min + i).toString());
 };
 
 export default function ShoppingCartPage() {
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [, setCartItems] = useState<CartItem[]>([]);
   const [cartProducts, setCartProducts] = useState<CartProductWithSize[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [paymentMethod, setPaymentMethod] = useState<"wish" | "cod">("cod");
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [showInstagramModal, setShowInstagramModal] = useState(false);
 
   useEffect(() => {
     const newTotal = cartProducts.reduce((sum, product) => {
@@ -55,26 +48,21 @@ export default function ShoppingCartPage() {
           localStorage.getItem("cartSizes") || "{}"
         );
 
-        const cartItemsWithDetails: CartItem[] = savedCart.map(
-          (id: string) => ({
-            id,
-            quantity: savedQuantities[id] || 1,
-            sizes: savedSizes[id] || [
-              parseSizeRange(
-                allProducts.find((p) => p.id === id)?.size || ""
-              )[0] || "",
-            ],
-          })
-        );
-
-        setCartItems(cartItemsWithDetails);
-
         const querySnapshot = await getDocs(collection(db, "products"));
         const products: Product[] = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...(doc.data() as Omit<Product, "id">),
         }));
-        setAllProducts(products);
+
+        const cartItemsWithDetails: CartItem[] = savedCart.map((id: string) => {
+          const product = products.find((p) => p.id === id);
+          const defaultSize = parseSizeRange(product?.size || "")[0] || "";
+          return {
+            id,
+            quantity: savedQuantities[id] || 1,
+            sizes: savedSizes[id] || [defaultSize],
+          };
+        });
 
         const productMap = new Map<
           string,
@@ -106,7 +94,8 @@ export default function ShoppingCartPage() {
         });
 
         setCartProducts(cartWithDetails);
-      } catch {
+      } catch (error) {
+        console.error("Error fetching cart products:", error);
       } finally {
         if (showSpinner) setIsLoading(false);
       }
@@ -130,7 +119,7 @@ export default function ShoppingCartPage() {
       window.removeEventListener("cartUpdated", handleUpdate);
       window.removeEventListener("storage", handleUpdate);
     };
-  }, [allProducts]);
+  }, []);
 
   const handleSizeChange = (productId: string, sizes: string[]) => {
     setCartProducts((prev) =>
@@ -155,15 +144,13 @@ export default function ShoppingCartPage() {
   };
 
   const validateCheckout = (): boolean => {
-    const invalidProducts = cartProducts.filter((product) => {
-      return product.selectedSizes.some((size) => !size || size === "");
-    });
-
+    const invalidProducts = cartProducts.filter((product) =>
+      product.selectedSizes.some((size) => !size || size === "")
+    );
     if (invalidProducts.length > 0) {
       setCheckoutError("Please select sizes for all items before checkout");
       return false;
     }
-
     setCheckoutError(null);
     return true;
   };
@@ -191,21 +178,32 @@ export default function ShoppingCartPage() {
     )}${paymentDetails}${totalDetails}\n\nThank you for your order!\n\nWe'll contact you shortly to confirm your order details.`;
   };
 
-  const handleCheckout = (platform: "whatsapp" | "instagram") => {
-    if (!validateCheckout()) {
-      return;
-    }
+  const handleCheckout = async (platform: "whatsapp" | "instagram") => {
+    if (!validateCheckout()) return;
 
     const message = generateOrderMessage();
     const encodedMessage = encodeURIComponent(message);
 
     if (platform === "whatsapp") {
-      const whatsappURL = `https://wa.me/96178817895?text=${encodedMessage}`;
-      window.open(whatsappURL, "_blank");
+      window.open(`https://wa.me/96178817895?text=${encodedMessage}`, "_blank");
     } else {
-      const instagramURL = `https://www.instagram.com/direct/t/17842013582474311/?text=${encodedMessage}`;
-      window.open(instagramURL, "_blank");
+      try {
+        await navigator.clipboard.writeText(message);
+
+        setShowInstagramModal(true);
+      } catch (err) {
+        console.error("Failed to copy text:", err);
+        window.open(
+          `https://www.instagram.com/direct/t/17842013582474311/?text=${encodedMessage}`,
+          "_blank"
+        );
+      }
     }
+  };
+
+  const handleInstagramOpen = () => {
+    window.open("https://www.instagram.com/direct/t/111778350216058", "_blank");
+    setShowInstagramModal(false);
   };
 
   return (
@@ -282,6 +280,27 @@ export default function ShoppingCartPage() {
           <p className="empty-cart-message">Your cart is empty.</p>
         )}
       </div>
+
+      {showInstagramModal && (
+        <div className="instagram-modal">
+          <div className="modal-content">
+            <h3>Message Copied to Clipboard!</h3>
+            <p>Follow these steps to complete your order:</p>
+            <ol>
+              <li>Click "Got it!" to open Instagram</li>
+              <li>Paste the message (Ctrl+V or long press and paste)</li>
+              <li>Send the message to complete your order</li>
+            </ol>
+            <button
+              className="modal-close-button"
+              onClick={handleInstagramOpen}
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </main>
   );
