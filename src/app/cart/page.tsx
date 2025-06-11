@@ -159,11 +159,11 @@ export default function ShoppingCartPage() {
     const lines = cartProducts.flatMap((p, productIndex) => {
       return p.selectedSizes.map((size, sizeIndex) => {
         const itemNumber = productIndex + sizeIndex + 1;
-        return `#${itemNumber}: ${
-          p.name
-        }\n• Size: ${size}\n• Price: $${p.price.toFixed(2)}\n• Image: ${
-          p.imageUrl
-        }`;
+        const priceDisplay = p.offerPrice
+          ? `~$${p.price.toFixed(2)}~ $${p.offerPrice.toFixed(2)}`
+          : `$${p.price.toFixed(2)}`;
+
+        return `#${itemNumber}: ${p.name}\n• Size: ${size}\n• Price: ${priceDisplay}\n• Image: ${p.imageUrl}`;
       });
     });
 
@@ -171,7 +171,7 @@ export default function ShoppingCartPage() {
       paymentMethod === "wish" ? "Wish Money" : "Cash on Delivery"
     }`;
 
-    const totalDetails = `\nTotal Amount: $${totalPrice.toFixed(2)}`;
+    const totalDetails = `\nTotal Amount: *$${totalPrice.toFixed(2)}*`;
 
     return `*ORDER RECEIPT*\n\n${lines.join(
       "\n\n"
