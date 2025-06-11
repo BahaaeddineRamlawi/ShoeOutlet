@@ -287,7 +287,7 @@ export default function ShoppingCartPage() {
             <h3>Message Copied to Clipboard!</h3>
             <p>Follow these steps to complete your order:</p>
             <ol>
-              <li>Click "Got it!" to open Instagram</li>
+              <li>Click &quot;Got it!&quot; to open Instagram</li>
               <li>Paste the message (Ctrl+V or long press and paste)</li>
               <li>Send the message to complete your order</li>
             </ol>
