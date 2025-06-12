@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
 import { db } from "@/lib/firebaseConfig";
 import useWindowWidth from "@/hooks/useWindowWidth";
@@ -24,6 +25,7 @@ export default function Home() {
   const [randomIndex, setRandomIndex] = useState(0);
   const [loadingRandom, setLoadingRandom] = useState(true);
   const [loadingRecent, setLoadingRecent] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   const searchRef = useRef<HTMLDivElement>(null);
   const screenWidth = useWindowWidth();
@@ -46,46 +48,73 @@ export default function Home() {
   useEffect(() => {
     const fetchLimitedProducts = async () => {
       setLoadingRandom(true);
-      const randomQuery = query(
-        collection(db, "products"),
-        orderBy("createdAt", "asc"),
-        limit(30)
-      );
-      const querySnapshot = await getDocs(randomQuery);
-      const allProducts: Product[] = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Product, "id">),
-      }));
+      try {
+        const randomQuery = query(
+          collection(db, "products"),
+          orderBy("createdAt", "asc"),
+          limit(30)
+        );
+        const querySnapshot = await getDocs(randomQuery);
 
-      const offers = allProducts.filter((p) => !!p.offerPrice);
-      setOfferProducts(offers);
+        if (querySnapshot.empty) {
+          setFetchError(true);
+          return;
+        }
 
-      const shuffled = allProducts.sort(() => Math.random() - 0.5).slice(0, 20);
-      setRandomProducts(shuffled);
-      setLoadingRandom(false);
+        const allProducts: Product[] = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<Product, "id">),
+        }));
 
-      const genderMap: Record<string, Set<string>> = {};
-      for (const p of shuffled) {
-        if (!genderMap[p.gender]) genderMap[p.gender] = new Set();
-        p.categories?.forEach((cat) => genderMap[p.gender].add(cat));
+        const offers = allProducts.filter((p) => !!p.offerPrice);
+        setOfferProducts(offers);
+
+        const shuffled = allProducts
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 20);
+        setRandomProducts(shuffled);
+
+        const genderMap: Record<string, Set<string>> = {};
+        for (const p of shuffled) {
+          if (!genderMap[p.gender]) genderMap[p.gender] = new Set();
+          p.categories?.forEach((cat) => genderMap[p.gender].add(cat));
+        }
+        setCategoriesMap(genderMap);
+      } catch (err) {
+        console.error("Fetch random failed", err);
+        setFetchError(true);
+      } finally {
+        setLoadingRandom(false);
       }
-      setCategoriesMap(genderMap);
     };
 
     const fetchRecent = async () => {
       setLoadingRecent(true);
-      const recentQuery = query(
-        collection(db, "products"),
-        orderBy("createdAt", "desc"),
-        limit(12)
-      );
-      const snapshot = await getDocs(recentQuery);
-      const items: Product[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Product, "id">),
-      }));
-      setRecentProducts(items);
-      setLoadingRecent(false);
+      try {
+        const recentQuery = query(
+          collection(db, "products"),
+          orderBy("createdAt", "desc"),
+          limit(12)
+        );
+        const snapshot = await getDocs(recentQuery);
+
+        if (snapshot.empty) {
+          setFetchError(true);
+          return;
+        }
+
+        const items: Product[] = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<Product, "id">),
+        }));
+
+        setRecentProducts(items);
+      } catch (err) {
+        console.error("Fetch recent failed", err);
+        setFetchError(true);
+      } finally {
+        setLoadingRecent(false);
+      }
     };
 
     fetchLimitedProducts();
@@ -138,21 +167,27 @@ export default function Home() {
 
       <div className="products-container">
         <h2 className="section-title">Random Selection</h2>
-        <div
-          className={`product-grid fade-wrapper ${
-            fadeTransition ? "fade-out" : "fade-in"
-          }`}
-        >
-          {loadingRandom
-            ? randomPlaceholders
-            : visibleProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-        </div>
+        {fetchError ? (
+          <p className="error-message">
+            ⚠️ Connection error. Please refresh the page.
+          </p>
+        ) : (
+          <div
+            className={`product-grid fade-wrapper ${
+              fadeTransition ? "fade-out" : "fade-in"
+            }`}
+          >
+            {loadingRandom
+              ? randomPlaceholders
+              : visibleProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+          </div>
+        )}
 
         <div className="section-divider" />
 
-        {offerProducts.length > 0 && (
+        {offerProducts.length > 0 && !fetchError && (
           <>
             <h2 className="section-title">Special Offers</h2>
             <div className="product-grid">
@@ -166,13 +201,19 @@ export default function Home() {
         <div className="section-divider" />
 
         <h2 className="section-title">Recent Products</h2>
-        <div className="product-grid">
-          {loadingRecent
-            ? recentPlaceholders
-            : recentProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-        </div>
+        {fetchError ? (
+          <p className="error-message">
+            ⚠️ Connection error. Please refresh the page.
+          </p>
+        ) : (
+          <div className="product-grid">
+            {loadingRecent
+              ? recentPlaceholders
+              : recentProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+          </div>
+        )}
       </div>
 
       <div className="shoe-ad-container">

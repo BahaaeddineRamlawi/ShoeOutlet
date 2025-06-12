@@ -193,16 +193,13 @@ export default function ShoppingCartPage() {
         setShowInstagramModal(true);
       } catch (err) {
         console.error("Failed to copy text:", err);
-        window.open(
-          `https://www.instagram.com/direct/t/17842013582474311/?text=${encodedMessage}`,
-          "_blank"
-        );
+        window.open("https://www.instagram.com/photos_by_b.r/", "_blank");
       }
     }
   };
 
   const handleInstagramOpen = () => {
-    window.open("https://www.instagram.com/direct/t/111778350216058", "_blank");
+    window.open(" https://www.instagram.com/photos_by_b.r/", "_blank");
     setShowInstagramModal(false);
   };
 

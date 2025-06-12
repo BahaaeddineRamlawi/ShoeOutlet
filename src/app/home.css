@@ -150,6 +150,13 @@
   border-radius: 4px;
 }
 
+.error-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #e53935;
+  padding: 1.5rem 0;
+}
+
 @keyframes gradientShift {
   0% {
     background-position: 0% 50%;
