@@ -12,7 +12,6 @@ const NavBar = () => {
   const [isLargeScreen, setIsLargeScreen] = useState(true);
   const [favoritesCount, setFavoritesCount] = useState(0);
 
-  // Update screen size on resize
   useEffect(() => {
     const checkScreenSize = () => setIsLargeScreen(window.innerWidth > 600);
     checkScreenSize();
@@ -20,7 +19,6 @@ const NavBar = () => {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  // Favorites badge: listen for changes in localStorage
   useEffect(() => {
     const updateFavoritesCount = () => {
       const storedFavorites: string[] = JSON.parse(
@@ -29,7 +27,7 @@ const NavBar = () => {
       setFavoritesCount(storedFavorites.length);
     };
 
-    updateFavoritesCount(); // initial load
+    updateFavoritesCount();
     window.addEventListener("favoritesUpdated", updateFavoritesCount);
     return () =>
       window.removeEventListener("favoritesUpdated", updateFavoritesCount);
@@ -69,7 +67,13 @@ const NavBar = () => {
       <div className="nav-background"></div>
       <div className="top-left-nav">
         <Link href="/" className="store-logo">
-          <span className="material-symbols-outlined shoe-icon">footprint</span>
+          <img
+            src="/icons/icon.png"
+            alt="ShoeOutlet Icon"
+            className="shoe-icon"
+            width={24}
+            height={24}
+          />
           <span className="store-name">ShoeOutlet</span>
         </Link>
       </div>
@@ -101,7 +105,11 @@ const NavBar = () => {
           )}
         </button>
 
-        <button className="icon-circle" id="shopping-cart-button" onClick={() => router.push("/cart")}>
+        <button
+          className="icon-circle"
+          id="shopping-cart-button"
+          onClick={() => router.push("/cart")}
+        >
           <span className="material-symbols-outlined">shopping_cart</span>
         </button>
 
