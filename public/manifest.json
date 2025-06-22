@@ -1,6 +1,6 @@
 {
-  "name": "ShoeOutlet",
-  "short_name": "ShoeOutlet",
+  "name": "Shoe Outlet App",
+  "short_name": "Shoe Outlet",
   "description": "Shoe Outlet Free Delivery",
   "start_url": "/",
   "display": "standalone",
