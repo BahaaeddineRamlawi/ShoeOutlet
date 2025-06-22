@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ShoeOutlet",
+  title: "Shoe Outlet",
   description: "Shoe Outlet Free Delivery",
   icons: {
     icon: "/icons/icon-192x192.png",
