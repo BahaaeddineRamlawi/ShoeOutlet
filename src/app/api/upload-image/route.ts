@@ -12,7 +12,6 @@ export async function POST(request: NextRequest) {
     if (!image) {
       return NextResponse.json({ error: "No image provided" }, { status: 400 });
     }
-    console.log("API_KEYS:", process.env.IMGBB_API_KEYS); // Remove this after testing
 
     if (API_KEYS.length === 0) {
       return NextResponse.json(
